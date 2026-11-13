@@ -12,6 +12,32 @@ export type Product = {
   altText: string;
 };
 
+/** 商品图文件名：去掉 slug 的 "yunsi-silk-" 前缀。 */
+export const imageSlug = (slug: string) => slug.replace(/^yunsi-silk-/, "");
+
+/**
+ * 解析商品图 src（M3 图片管线）：
+ *  - 配置了 NEXT_PUBLIC_SUPABASE_STORAGE_BASE / NEXT_PUBLIC_SUPABASE_URL 时，
+ *    指向 Supabase Storage 公共桶 product-images/
+ *  - 否则回退到本地 seed 图 public/products/<file>.png
+ * NEXT_PUBLIC_* 前后端皆可读，client/server 组件都能用。
+ */
+export function productImageSrc(slug: string): string {
+  const file = `${imageSlug(slug)}.png`;
+  const base =
+    process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BASE ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (base) {
+    return `${base.replace(/\/$/, "")}/storage/v1/object/public/product-images/${file}`;
+  }
+  return `/products/${file}`;
+}
+
+export const heroImageSrc = (): string =>
+  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BASE
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BASE.replace(/\/$/, "")}/product-images/hero.png`
+    : "/products/hero.png";
+
 export type JournalPost = {
   slug: string;
   title: string;

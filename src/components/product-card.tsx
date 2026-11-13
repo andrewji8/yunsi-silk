@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useCart } from "./cart";
-import { ProductArt } from "./product-art";
-import type { Product } from "@/data/products";
+import { ProductImage } from "./product-image";
+import { productImageSrc, type Product } from "@/data/products";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
@@ -16,10 +16,12 @@ export function ProductCard({ product }: { product: Product }) {
         href={`/product/${product.slug}`}
         className="relative overflow-hidden rounded-img bg-line"
       >
-        <div className="aspect-[3/4] w-full transition-transform duration-500 group-hover:scale-[1.03]">
-          <ProductArt
+        <div className="aspect-[3/4] w-full overflow-hidden transition-transform duration-500 group-hover:scale-[1.03]">
+          <ProductImage
+            image={productImageSrc(product.slug)}
             slug={product.slug}
             color={product.colors[0]}
+            ratio={3 / 4}
             label={product.altText}
           />
         </div>

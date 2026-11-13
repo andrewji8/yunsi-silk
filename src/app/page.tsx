@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { PRODUCTS, CATEGORIES } from "@/data/products";
+import { PRODUCTS, CATEGORIES, heroImageSrc } from "@/data/products";
 import { ProductCard } from "@/components/product-card";
 import { ProductArt } from "@/components/product-art";
+import { ProductImage } from "@/components/product-image";
 import { Newsletter } from "@/components/newsletter";
 
 export default function Home() {
@@ -39,11 +40,13 @@ export default function Home() {
             </div>
           </div>
           <div className="aspect-[4/3] w-full overflow-hidden rounded-card bg-line">
-            <ProductArt
+            <ProductImage
+              image={heroImageSrc()}
               slug="hero-silk"
               color="晨雾"
               ratio={4 / 3}
               label="YUNSI 云丝真丝 Hero 图"
+              eager
             />
           </div>
         </div>

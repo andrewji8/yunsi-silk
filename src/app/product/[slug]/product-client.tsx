@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PRODUCTS } from "@/data/products";
+import { PRODUCTS, productImageSrc } from "@/data/products";
 import { useCart } from "@/components/cart";
+import { ProductImage } from "@/components/product-image";
 import { ProductArt } from "@/components/product-art";
 import { ProductCard } from "@/components/product-card";
 
@@ -50,7 +51,14 @@ export function ProductDetailClient({ productSlug }: { productSlug: string }) {
         {/* 画廊 */}
         <div>
           <div className="aspect-[3/4] w-full overflow-hidden rounded-card bg-line">
-            <ProductArt slug={product.slug} color={color} label={product.altText} />
+            <ProductImage
+              image={productImageSrc(product.slug)}
+              slug={product.slug}
+              color={color}
+              ratio={3 / 4}
+              label={product.altText}
+              eager
+            />
           </div>
           <div className="mt-4 grid grid-cols-4 gap-3">
             {[0, 1, 2, 3].map((i) => (

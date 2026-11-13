@@ -96,3 +96,20 @@ insert into journal (slug, title, summary, body, cta) values
  ('real-vs-fake-silk','真丝和「仿真丝」，怎么一眼分清','三个小实验，一分钟辨真假。',[{"heading":"烧","body":"真丝是羽毛味、灰黑色；化纤是塑料味、硬球。"},{"heading":"静电","body":"真丝几乎不粘手。"},{"heading":"看吊牌成分","body":"认准 100% 桑蚕丝 / 柞蚕丝。"}],'只用好丝，看我们的溯源卡'),
  ('silk-care-guide','真丝护理指南：洗、晾、存，一次讲透','冷水、阴干、香樟子。',[{"heading":"洗","body":"冷水 + 中性丝毛净，手洗 3 分钟内，别拧。"},{"heading":"晾","body":"反面、阴凉、平铺或半挂。"},{"heading":"存","body":"避光、防蛀，桑蚕丝怕樟脑丸，用雪松木。"}],'配一条丝质盖毯，给衣柜加层保护')
 on conflict (slug) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- M3 商品图：Supabase Storage 公共桶 product-images
+--   1) 在 Supabase Dashboard → Storage 新建公共桶 product-images
+--   2) 上传 public/products/*.png 到该桶（与本地 seed 同名）
+--   3) 前端 productImageSrc() 检测到 NEXT_PUBLIC_SUPABASE_URL 后自动切到该桶
+--      （见 src/data/products.ts）
+--   下方 RLS 允许 anon 读取该桶（公共可读），写入仅 service_role。
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public) values ('product-images', 'product-images', true)
+on conflict (id) do update set public = true;
+
+create policy "public_read_product_images" on storage.objects for select
+  using (bucket_id = 'product-images');
+
+create policy "service_write_product_images" on storage.objects for insert
+  to service_role with check (bucket_id = 'product-images');
