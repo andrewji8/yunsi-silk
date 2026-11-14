@@ -44,11 +44,16 @@ export const heroImageSrc = (): string =>
  * 例：衬衫·雾白 选「墨玉绿」→ public/products/shirt-mist-white-jade.png
  */
 const COLOR_VARIANTS: Record<string, Record<string, string>> = {
-  "yunsi-silk-shirt-mist-white": { 墨玉绿: "shirt-mist-white-jade" },
-  "yunsi-silk-slip-dress": { 墨玉绿: "slip-dress-jade" },
-  "yunsi-silk-scarf-cashmere": { 墨玉绿: "scarf-cashmere-jade" },
-  "yunsi-silk-eyemask": { 墨玉绿: "eyemask-jade" },
+  "yunsi-silk-shirt-mist-white": { 墨玉绿: "shirt-mist-white-jade", 藕粉: "shirt-mist-white-lotus" },
+  "yunsi-silk-shirt-river": { 雾白: "shirt-river-white" },
+  "yunsi-silk-slip-dress": { 墨玉绿: "slip-dress-jade", 藕粉: "slip-dress-lotus" },
+  "yunsi-silk-duvet-set": { 月白: "duvet-set-white" },
+  "yunsi-silk-pijama": { 藕粉: "pijama-lotus" },
+  "yunsi-silk-scarf-cashmere": { 墨玉绿: "scarf-cashmere-jade", 雾白: "scarf-cashmere-white" },
+  "yunsi-silk-eyemask": { 墨玉绿: "eyemask-jade", 藕粉: "eyemask-lotus" },
+  "yunsi-silk-blouse-nuance": { 雾白: "blouse-nuance-white" },
   "yunsi-silk-kimono": { 墨玉绿: "kimono-jade" },
+  "yunsi-silk-throw": { 月白: "throw-white" },
 };
 
 /** 该颜色的商品图 src：有变体图用变体，否则回退默认图。 */
