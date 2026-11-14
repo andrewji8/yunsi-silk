@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PRODUCTS, productImageSrc } from "@/data/products";
+import { PRODUCTS, colorVariantImage } from "@/data/products";
 import { useCart } from "@/components/cart";
 import { ProductImage } from "@/components/product-image";
 import { ProductArt } from "@/components/product-art";
@@ -51,12 +51,13 @@ export function ProductDetailClient({ productSlug }: { productSlug: string }) {
         {/* 画廊 */}
         <div>
           <div className="aspect-[3/4] w-full overflow-hidden rounded-card bg-line">
+            {/* 主图随选中颜色切换：有该颜色实拍图则显示，否则回退默认图/SVG */}
             <ProductImage
-              image={productImageSrc(product.slug)}
+              image={colorVariantImage(product.slug, color)}
               slug={product.slug}
               color={color}
               ratio={3 / 4}
-              label={product.altText}
+              label={`${product.name}（${color}）`}
               eager
             />
           </div>

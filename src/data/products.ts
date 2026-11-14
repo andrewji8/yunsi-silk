@@ -38,6 +38,37 @@ export const heroImageSrc = (): string =>
     ? `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BASE.replace(/\/$/, "")}/product-images/hero.png`
     : "/products/hero.png";
 
+/**
+ * 颜色变体图（M3.1）：选中某颜色时优先用该颜色的实拍图。
+ * 仅收录「已生成变体图」的颜色；未收录的颜色回退到默认图。
+ * 例：衬衫·雾白 选「墨玉绿」→ public/products/shirt-mist-white-jade.png
+ */
+const COLOR_VARIANTS: Record<string, Record<string, string>> = {
+  "yunsi-silk-shirt-mist-white": { 墨玉绿: "shirt-mist-white-jade" },
+  "yunsi-silk-slip-dress": { 墨玉绿: "slip-dress-jade" },
+  "yunsi-silk-scarf-cashmere": { 墨玉绿: "scarf-cashmere-jade" },
+  "yunsi-silk-eyemask": { 墨玉绿: "eyemask-jade" },
+  "yunsi-silk-kimono": { 墨玉绿: "kimono-jade" },
+};
+
+/** 该颜色的商品图 src：有变体图用变体，否则回退默认图。 */
+export function colorVariantImage(slug: string, color: string): string {
+  const variant = COLOR_VARIANTS[slug]?.[color];
+  const file = variant ? `${variant}.png` : `${imageSlug(slug)}.png`;
+  const base =
+    process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BASE ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (base) {
+    return `${base.replace(/\/$/, "")}/storage/v1/object/public/product-images/${file}`;
+  }
+  return `/products/${file}`;
+}
+
+/** 该商品是否有指定颜色的专属图片（供 UI 显示「有图」标记）。 */
+export function hasColorVariant(slug: string, color: string): boolean {
+  return Boolean(COLOR_VARIANTS[slug]?.[color]);
+}
+
 export type JournalPost = {
   slug: string;
   title: string;
