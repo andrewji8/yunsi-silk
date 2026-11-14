@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JOURNAL } from "@/data/products";
 
+export const instant = false;
+
 export function generateStaticParams() {
   return JOURNAL.map((p) => ({ slug: p.slug }));
 }

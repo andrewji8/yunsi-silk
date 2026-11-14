@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { PRODUCTS } from "@/data/products";
 import { ProductDetailClient } from "./product-client";
 
+export const instant = false;
+
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ slug: p.slug }));
 }
