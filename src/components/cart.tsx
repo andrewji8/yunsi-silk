@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import { ProductArt } from "./product-art";
 import type { Product } from "@/data/products";
 
@@ -106,6 +107,11 @@ export function useCart() {
 
 export function CartDrawer() {
   const { items, setQty, remove, subtotal, count, open, setOpen } = useCart();
+  const router = useRouter();
+  const goCheckout = () => {
+    setOpen(false);
+    router.push("/checkout");
+  };
   return (
     <aside
       className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
@@ -192,6 +198,7 @@ export function CartDrawer() {
           </div>
           <button
             disabled={items.length === 0}
+            onClick={goCheckout}
             className="w-full rounded-pill bg-primary py-3 text-sm font-medium text-surface disabled:opacity-40"
           >
             去结算（支付宝 / 微信）

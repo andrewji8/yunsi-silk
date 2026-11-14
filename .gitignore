@@ -41,3 +41,19 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 next-start.log
+
+# 本地订单数据（M4 mock 支付，运行时生成）
+.data/
+
+# 临时日志
+vercel-login.log
+vercel-login.err
+vlogin.log
+vlogin.err
+vlogin-result.txt
+e2e.log
+sup-upload.log
+sup-secret.log
+smoke-sup.log
+smoke.log
+smoke2.log
