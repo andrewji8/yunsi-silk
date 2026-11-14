@@ -40,17 +40,12 @@ const Ctx = createContext<CartCtx | null>(null);
 const KEY = "yunsi-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = localStorage.getItem(KEY);
-      return raw ? (JSON.parse(raw) as CartItem[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  // 初始值两端都为空，保证 SSR 与客户端首 render 一致（避免 hydration 不匹配）；
+  // 真实购物车数据在 mount 后再从 localStorage 恢复。
+  const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState<Toast>(null);
+  const [restored, setRestored] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 加购时不再自动打开抽屉，改用轻量 toast 提示（不弹完整清单）。
@@ -60,13 +55,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     toastTimer.current = setTimeout(() => setToast(null), 2200);
   }, []);
 
+  // mount 后恢复购物车（仅客户端执行）。
+  // 这是 React 官方推荐的 SSR/localStorage 恢复模式：把外部系统状态同步进 React state。
+  // 用 requestAnimationFrame 延迟一帧执行，使首帧渲染（与 SSR 一致的空购物车）先完成，
+  // 再切换数据，既保证水合一致，也避免在 effect 体里同步 setState 触发级联渲染告警。
   useEffect(() => {
+    const restore = () => {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) setItems(JSON.parse(raw) as CartItem[]);
+      } catch {
+        /* ignore */
+      }
+      setRestored(true);
+    };
+    const raf = requestAnimationFrame(restore);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // 仅在恢复完成后才写回 localStorage，避免用初始空值覆盖用户真实购物车
+  useEffect(() => {
+    if (!restored) return;
     try {
       localStorage.setItem(KEY, JSON.stringify(items));
     } catch {
       /* ignore */
     }
-  }, [items]);
+  }, [items, restored]);
 
   const add = useCallback(
     (p: Product, color?: string, size?: string, qty = 1) => {
